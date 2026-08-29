@@ -1,0 +1,16 @@
+node_modules
+dist
+.next
+.vinext
+.wrangler
+.git
+.github
+.env*
+!.env.example
+*.md
+app
+public
+openapi*
+tsconfig.tsbuildinfo
+server/uploads/*
+!server/uploads/.gitkeep

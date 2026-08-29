@@ -1,0 +1,54 @@
+{
+  "name": "sites-project",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "vinext dev",
+    "dev:api": "node --watch server/index.mjs",
+    "db:migrate": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f database/schema.sql'",
+    "db:seed": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f database/seed.sql'",
+    "build": "vinext build",
+    "start": "vinext start",
+    "test": "node --test --experimental-strip-types \"tests/*.test.mjs\"",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fast-xml-parser": "^5.11.1",
+    "next": "16.3.3",
+    "nodemailer": "^7.0.13",
+    "pdfkit": "^0.17.2",
+    "pg": "^8.12.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@cloudflare/workers-types": "4.20260515.1",
+    "@openai/sites-vite-plugin": "^0.1.0 || ^0.2.0",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "concurrently": "^8.2.2",
+    "dotenv-cli": "^7.3.0",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "react-server-dom-webpack": "19.2.6",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vinext": "1.0.0-beta.3",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  },
+  "type": "module"
+}
