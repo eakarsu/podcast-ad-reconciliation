@@ -84,6 +84,10 @@ if [[ ! -d node_modules ]]; then
   npm install
 fi
 
+if [[ "${ALLOW_DEMO_SEED:-false}" == "true" ]]; then
+  npm run db:seed
+fi
+
 printf 'Starting SignalLedger\n'
 printf '  App: http://localhost:%s\n' "$web_port"
 printf '  API: http://localhost:%s\n' "$api_port"

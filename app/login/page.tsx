@@ -45,19 +45,12 @@ export default function LoginPage() {
     }
   };
 
-  const loginAutomatically = async () => {
+  const fillDemoCredentials = () => {
     if (busy) return;
-    setBusy(true);
-    setAutomaticLogin(true);
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setAutomaticLogin(false);
     setError(null);
-    try {
-      await api.login(DEMO_EMAIL, DEMO_PASSWORD);
-      router.replace(nextUrl);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Automatic login failed.");
-      setBusy(false);
-      setAutomaticLogin(false);
-    }
   };
 
   return (
@@ -102,22 +95,22 @@ export default function LoginPage() {
 
           <button className="sl-btn sl-btn-primary sl-login-submit" type="submit" disabled={busy}>
             {busy && !automaticLogin ? <Spinner sm /> : <Icon name={mode === "login" ? "shield" : "plus"} />}
-            {mode === "login" ? "Sign in" : "Create workspace"}
+            {mode === "login" ? "Sign In" : "Create workspace"}
           </button>
 
           {mode === "login" ? (
             <>
               <div className="sl-login-or"><span>or</span></div>
-              <button className="sl-btn sl-btn-outline sl-login-submit" type="button" onClick={() => void loginAutomatically()} disabled={busy}>
-                {automaticLogin ? <Spinner sm /> : <Icon name="pulse" />}
-                {automaticLogin ? "Opening demo workspace…" : "Automatic demo login"}
+              <button className="sl-btn sl-btn-outline sl-login-submit" type="button" onClick={fillDemoCredentials} disabled={busy}>
+                <Icon name="pulse" />
+                Auto Fill Demo Credentials
               </button>
             </>
           ) : null}
         </form>
 
         {mode === "login" ? (
-          <p className="sl-login-hint">No setup required — automatic login opens the populated demo workspace.</p>
+          <p className="sl-login-hint">Fill the demo credentials, then select Sign In to open the populated workspace.</p>
         ) : (
           <p className="sl-login-hint">Creates a fresh organization where you are the admin.</p>
         )}
