@@ -5,9 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "../lib/api";
 import { Icon, Spinner } from "../lib/ui";
 
-const DEMO_EMAIL = "admin@signalledger.local";
-const DEMO_PASSWORD = "demo1234";
-
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,12 +42,26 @@ export default function LoginPage() {
     }
   };
 
-  const fillDemoCredentials = () => {
+  const fillDemoCredentials = async () => {
     if (busy) return;
-    setEmail(DEMO_EMAIL);
-    setPassword(DEMO_PASSWORD);
-    setAutomaticLogin(false);
+    setBusy(true);
+    setAutomaticLogin(true);
     setError(null);
+    try {
+      const credentials = await api.demoCredentials();
+      if (!credentials?.email || !credentials?.password) {
+        throw new Error("Demo credentials are unavailable.");
+      }
+      // Fill the fields, then sign in immediately with the freshly fetched values.
+      setEmail(credentials.email);
+      setPassword(credentials.password);
+      await api.login(credentials.email.trim(), credentials.password);
+      router.replace(nextUrl);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Sign in failed.");
+      setBusy(false);
+      setAutomaticLogin(false);
+    }
   };
 
   return (
@@ -103,14 +114,14 @@ export default function LoginPage() {
               <div className="sl-login-or"><span>or</span></div>
               <button className="sl-btn sl-btn-outline sl-login-submit" type="button" onClick={fillDemoCredentials} disabled={busy}>
                 <Icon name="pulse" />
-                Auto Fill Demo Credentials
+                Auto Fill &amp; Sign In (Demo)
               </button>
             </>
           ) : null}
         </form>
 
         {mode === "login" ? (
-          <p className="sl-login-hint">Fill the demo credentials, then select Sign In to open the populated workspace.</p>
+          <p className="sl-login-hint">Fill the demo credentials and sign in to open the populated workspace.</p>
         ) : (
           <p className="sl-login-hint">Creates a fresh organization where you are the admin.</p>
         )}

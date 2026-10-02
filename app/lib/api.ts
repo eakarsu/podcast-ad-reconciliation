@@ -99,6 +99,7 @@ function listParams(opts: ListOpts): URLSearchParams {
 export const api = {
   /* ---- auth ---- */
   me: () => apiFetch<AuthMe>("/api/auth/me"),
+  demoCredentials: () => apiFetch<{ email: string; password: string }>("/api/auth/demo-credentials"),
   login: (email: string, password: string) =>
     apiFetch<AuthMe>("/api/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
   register: (body: { name: string; email: string; password: string; organization_name: string }) =>

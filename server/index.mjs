@@ -183,6 +183,20 @@ app.post('/api/auth/login', async (req, res, next) => {
   }
 });
 
+// Local demo-credential bridge. Disabled in production; opt in explicitly.
+app.get('/api/auth/demo-credentials', (_req, res) => {
+  const enabled =
+    process.env.NODE_ENV !== 'production' &&
+    process.env.ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true';
+  const email = process.env.DEMO_ADMIN_EMAIL || process.env.ADMIN_EMAIL || '';
+  const password = process.env.DEMO_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || '';
+  if (!enabled || !email || !password) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  res.setHeader('Cache-Control', 'no-store');
+  return res.json({ email, password });
+});
+
 /* ------------------------------------------------------------------ */
 /*  Auth gate: everything below requires a valid session               */
 /* ------------------------------------------------------------------ */
